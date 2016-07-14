@@ -16,7 +16,7 @@ class Game
   end
 
   def get_user_input
-    puts "Choose a position: "
+    print "Choose a position: "
     gets.chomp.to_i
   end
 
@@ -30,7 +30,7 @@ class Game
   end
 
   def user_starts?
-    puts "Do you want to have the first move(y/n)?"
+    print "Do you want to have the first move(y/n)? "
     loop do
       input = gets.chomp
       if input == 'y'
