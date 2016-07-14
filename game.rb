@@ -50,7 +50,7 @@ class Game
       build_tree_from_initial_move(0) # Just choose a border position as initial AI move
       turn += 1
     end
-    until @root.won? || @root.game_over?
+    until @root.won? || @root.draw?
       turn += 1
       if turn % 2 == 0
         @root.display_board

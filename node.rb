@@ -47,7 +47,7 @@ class Node
   def build_tree
     # display_board
     paths_to_victory_on_next_current_player_move = nil
-    unless @won || game_over?
+    unless @won || draw?
       paths_to_victory_on_next_current_player_move = []
       next_moves.each do |move|
         new_node = Node.new(
@@ -83,7 +83,8 @@ class Node
     false
   end
 
-  def game_over?
+  def draw?
+    # this actually means we have a draw, should rename this method
     !@won && next_moves.empty?
   end
 
@@ -100,6 +101,6 @@ class Node
   def update_game_counts
     Node.black_count += 1 if (@won && (@color == :black))
     Node.white_count += 1 if (@won && (@color == :white))
-    Node.draw_count += 1 if (!@won && game_over?)
+    Node.draw_count += 1 if (!@won && draw?)
   end
 end
