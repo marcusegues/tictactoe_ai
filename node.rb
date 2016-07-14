@@ -10,7 +10,7 @@ class Node
     attr_accessor :black_count, :white_count, :draw_count
   end
 
-  attr_accessor :black, :white
+  attr_accessor :black, :white, :path_to_victory, :adjacent
   def initialize(black = 0, white = 0, color = :black, adjacent = [])
     @black = black
     @white = white
@@ -22,6 +22,7 @@ class Node
   def next_moves
     bits = ~(black | white)
     8.downto(0).select { |pos| pos unless bits[pos] == 0 }
+    # https://calleerlandsson.com/2014/02/06/rubys-bitwise-operators/
   end
 
   def binary_representation(int)
@@ -45,6 +46,7 @@ class Node
   def build_tree
     # display_board
     unless @won || game_over?
+      paths_to_victory_on_next_current_player_move = []
       next_moves.each do |move|
         new_node = Node.new(
           next_player_color == :black ? simulate_move(:black, Constants.positions[move]) : @black,
@@ -52,12 +54,19 @@ class Node
           next_player_color
         )
         @adjacent << new_node
-        new_node.build_tree
+        paths_to_victory_on_next_current_player_move << new_node.build_tree
       end
     end
-    Node.black_count += 1 if (@won && (@color == :black))
-    Node.white_count += 1 if (@won && (@color == :white))
-    Node.draw_count += 1 if (!@won && game_over?)
+
+    if @won
+      @path_to_victory = true
+    else
+      @path_to_victory = paths_to_victory_on_next_current_player_move.all?
+    end
+
+    update_game_counts
+
+    return @adjacent.any? {|node| node.path_to_victory}
   end
 
   def won?
@@ -80,5 +89,11 @@ class Node
   def next_player_color
     return :white if @color == :black
     :black
+  end
+
+  def update_game_counts
+    Node.black_count += 1 if (@won && (@color == :black))
+    Node.white_count += 1 if (@won && (@color == :white))
+    Node.draw_count += 1 if (!@won && game_over?)
   end
 end
