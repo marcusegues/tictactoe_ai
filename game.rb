@@ -7,6 +7,10 @@ class Game
 
   def get_initial_user_move
     initial_position = get_user_input
+    build_tree_from_initial_move(initial_position)
+  end
+
+  def build_tree_from_initial_move(initial_position)
     @root = Node.new(0, Constants.positions[initial_position], :white)
     @root.build_tree
   end
@@ -25,10 +29,27 @@ class Game
     puts
   end
 
+  def user_starts?
+    puts "Do you want to have the first move?"
+    loop do
+      input = gets.chomp
+      if input == 'y'
+        return true
+      else
+        return false
+      end
+    end
+  end
+
   def game_loop
     turn = 0;
-    display_initial_game_state
-    get_initial_user_move
+    if user_starts?
+      display_initial_game_state
+      get_initial_user_move
+    else
+      build_tree_from_initial_move(0) # Just choose a border position as initial AI move
+      turn += 1
+    end
     until @root.won? || @root.game_over?
       turn += 1
       if turn % 2 == 0
@@ -51,9 +72,11 @@ class Game
   end
 
   def get_ai_next_move
+    # take a winning move if it's available
     @root.adjacent.each do |next_node|
       return next_node if next_node.path_to_victory
     end
+    #do not choose a move that gives the next player a winning path
     @root.adjacent.each do |next_node|
       return next_node if next_node.adjacent.none? { |next_next_node| next_next_node.path_to_victory }
     end
