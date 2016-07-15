@@ -2,6 +2,7 @@
 
 Run `ruby game.rb` on the command line to play the game. 
 
+
 - Allows user to choose if he wants to make the first move or not.
 - A tree is generated after the first move is made with all possible states of the game.
 - Each node stores instance variables for the current history of moves made by each player. This current history is simply an integer, where the nine least significant bits represent positions on the tic tac toe board. A one means that position has been played, a zero means it hasn't
